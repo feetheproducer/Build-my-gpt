@@ -6,8 +6,9 @@ files up to approximately **150 MB**. The summarization logic is implemented in
 algorithm.
 
 A lightweight helper `media_processor.py` is also included for working with
-text, audio and video files. Audio and video support are currently stubbed so
-no external dependencies are required.
+text, audio and video files. Audio input is now transcribed into musical
+notation or guitar tab using `librosa`. Install `librosa` and `soundfile` to
+enable this functionality. Video support remains a stub.
 
 ## Quick Start
 
@@ -23,15 +24,16 @@ the final summary.
 
 ### Handling audio and video
 
-Use `media_processor.py` to run the summarizer on text files or to invoke the
-stub handlers for audio and video formats:
+Use `media_processor.py` to run the summarizer on text files or to convert
+audio into notation or tab. Video files still return stub predictions:
 
 ```bash
-python3 media_processor.py path/to/file.wav --audio-response notation
+python3 media_processor.py path/to/file.wav --audio-response notation --clef treble
 ```
 
 The `--audio-response` option chooses between `notation` and `tab` modes when
-processing audio files.
+processing audio files. Use `--clef treble` or `--clef bass` when requesting
+notation to select the clef.
 
 ## Running Tests
 
