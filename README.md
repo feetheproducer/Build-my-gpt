@@ -40,3 +40,15 @@ Automated tests ensure the tools operate correctly. Execute them with:
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+## Questionnaire Tool
+
+`questionnaire.py` provides a lightweight way to run multiple-choice or open-ended quizzes from a JSON file. Each question entry contains a `prompt`, the correct `answer`, and optional list of `options` for multiple choice.
+
+Run a quiz interactively:
+
+```bash
+python3 questionnaire.py questions.json
+```
+
+To see usage in tests, refer to `tests/test_questionnaire.py`.
