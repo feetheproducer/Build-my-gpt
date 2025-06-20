@@ -1,6 +1,12 @@
 import re
 import heapq
 from typing import Iterable
+from typing import Optional
+
+try:
+    from onedrive_client import OneDriveClient
+except ImportError:  # pragma: no cover - optional dependency
+    OneDriveClient = None  # type: ignore
 
 # Basic set of stopwords for summarization
 STOPWORDS = {
@@ -56,13 +62,32 @@ def main() -> None:
                         help='Chunk size in bytes (default 5MB)')
     parser.add_argument('-n', '--sentences', type=int, default=5,
                         help='Number of sentences in summary')
+    parser.add_argument('--onedrive-path', help='Upload summary to this OneDrive path')
+    parser.add_argument('--access-token', help='OneDrive OAuth access token')
     args = parser.parse_args()
     summary = summarize_file(args.input, args.chunk_size, args.sentences)
-    if args.output:
-        with open(args.output, 'w', encoding='utf-8') as out:
+    output_path: Optional[str] = args.output
+    if output_path:
+        with open(output_path, 'w', encoding='utf-8') as out:
             out.write(summary)
     else:
-        print(summary)
+        if args.onedrive_path:
+            import tempfile
+            tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.txt')
+            output_path = tmp.name
+            with open(output_path, 'w', encoding='utf-8') as out:
+                out.write(summary)
+            print(summary)
+        else:
+            print(summary)
+
+    if args.onedrive_path:
+        if OneDriveClient is None:
+            raise RuntimeError('onedrive_client module is required for upload')
+        if not args.access_token:
+            raise RuntimeError('--access-token is required when using --onedrive-path')
+        client = OneDriveClient(args.access_token)
+        client.upload_file(output_path, args.onedrive_path)
 
 if __name__ == '__main__':
     main()

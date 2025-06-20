@@ -21,6 +21,19 @@ python3 summarizer.py path/to/input.txt -o summary.txt
 Command‑line options allow customizing the chunk size and number of sentences in
 the final summary.
 
+### Uploading to OneDrive
+
+The summarizer can upload the resulting summary directly to OneDrive if you
+provide an OAuth access token:
+
+```bash
+python3 summarizer.py input.txt -o summary.txt \
+    --onedrive-path Documents/summary.txt --access-token YOUR_TOKEN
+```
+
+`onedrive_client.py` implements the minimal integration using the Microsoft
+Graph API. Ensure your token has permission to read and write files.
+
 ### Handling audio and video
 
 Use `media_processor.py` to run the summarizer on text files or to invoke the
